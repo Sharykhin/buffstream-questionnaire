@@ -23,6 +23,12 @@ services:
         install_compile_deamon: "on"
         install_goose: "off"
     command: bash -c 'CompileDaemon -log-prefix=false -build="go build -race -o bin/rest ./cmd/rest" -command="./bin/rest -addr :8000" --graceful-kill=true -color=true'
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
     volumes:
       - type: bind
         source: .

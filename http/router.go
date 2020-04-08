@@ -1,7 +1,8 @@
 package http
 
 import (
-	"fmt"
+	"Sharykhin/buffstream-questionnaire/di"
+	"Sharykhin/buffstream-questionnaire/http/controller"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -21,8 +22,8 @@ func router() http.Handler {
 	v1.Use(middleware.JsonContentType)
 
 	v1.HandleFunc("/streams", func (w http.ResponseWriter, r *http.Request) {
-		fmt.Println("create stream handler")
-	}).Methods("POST")
+		controller.ListStreams(di.StreamService, w, r)
+	}).Methods("GET")
 
 	return r
 }
