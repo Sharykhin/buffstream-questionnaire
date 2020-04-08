@@ -10,3 +10,8 @@
  ```bash
  cp env.example .env
  ```
+
+2. Build docker images:
+```bash
+docker-compose build
+```

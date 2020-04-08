@@ -1,4 +1,4 @@
-.PHONY: up down migration migrate-up migrate-down migrate-status
+.PHONY: up down stats migration migrate-up migrate-down migrate-status
 
 include .env
 export
@@ -20,18 +20,21 @@ up: check-envs
 down:
 	docker-compose down
 
+stats:
+	docker stats $$(docker ps --filter network=go_payments --format="{{.Names}}")
+
 migration:
 	# example: make migration name=crate_streams_table
-	docker-compose run sql-migration goose -dir infrastructure/database/migration create ${name} sql
+	docker-compose run sql-migration goose -dir ./migrations create ${name} sql
 
 migrate-up:
 	# example: make migrate-up
-	docker-compose run sql-migration goose -dir infrastructure/database/migration postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" up
+	docker-compose run sql-migration goose -dir /migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" up
 
 migrate-down:
 	# example: make migrate-down
-	docker-compose run sql-migration goose -dir infrastructure/database/migration postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" down
+	docker-compose run sql-migration goose -dir /migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" down
 
 migrate-status:
 	# example: make migrate-status
-	docker-compose run sql-migration goose -dir infrastructure/database/migration postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" status
+	docker-compose run sql-migration goose -dir /migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" status
