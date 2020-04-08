@@ -25,16 +25,16 @@ stats:
 
 migration:
 	# example: make migration name=crate_streams_table
-	docker-compose run sql-migration goose -dir ./migrations create ${name} sql
+	docker-compose run sql-migration goose -dir ./database/migrations create ${name} sql
 
 migrate-up:
 	# example: make migrate-up
-	docker-compose run sql-migration goose -dir /migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" up
+	docker-compose run sql-migration goose -dir /database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" up
 
 migrate-down:
 	# example: make migrate-down
-	docker-compose run sql-migration goose -dir /migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" down
+	docker-compose run sql-migration goose -dir /database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" down
 
 migrate-status:
 	# example: make migrate-status
-	docker-compose run sql-migration goose -dir /migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" status
+	docker-compose run sql-migration goose -dir /database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" status
