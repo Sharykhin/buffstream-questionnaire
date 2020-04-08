@@ -22,17 +22,15 @@ services:
       args:
         install_compile_deamon: "on"
         install_goose: "off"
-    command: bash -c 'CompileDaemon -log-prefix=false -build="go build -race -o bin/rest ./cmd/rest" -command="./bin/rest -addr :${REST_PORT}" --graceful-kill=true -color=true'
+    command: bash -c 'CompileDaemon -log-prefix=false -build="go build -race -o bin/rest ./cmd/rest" -command="./bin/rest -addr :8000" --graceful-kill=true -color=true'
     volumes:
       - type: bind
         source: .
         target: /app
-    environment:
-      - REST_PORT=${REST_PORT}
     expose:
       - 8000
     ports:
-      - ${LOCAL_REST_PORT}:${REST_PORT}
+      - ${LOCAL_REST_PORT}:8000
     networks:
       - buff
 

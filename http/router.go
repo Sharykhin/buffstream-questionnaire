@@ -1,8 +1,12 @@
 package http
 
 import (
-	"github.com/gorilla/mux"
+	"fmt"
 	"net/http"
+
+	"github.com/gorilla/mux"
+
+	"Sharykhin/buffstream-questionnaire/http/middleware"
 )
 
 func router() http.Handler {
@@ -12,5 +16,13 @@ func router() http.Handler {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("OK"))
 	}).Methods("GET")
+
+	v1 := r.PathPrefix("/v1").Subrouter()
+	v1.Use(middleware.JsonContentType)
+
+	v1.HandleFunc("/streams", func (w http.ResponseWriter, r *http.Request) {
+		fmt.Println("create stream handler")
+	}).Methods("POST")
+
 	return r
 }

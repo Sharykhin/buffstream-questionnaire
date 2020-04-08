@@ -3,12 +3,11 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/lib/pq" // import postgers dependencies
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
-
-	_ "github.com/lib/pq" // import postgers dependencies
 )
 
 // NewConnection establishes a new connection with Postgres
@@ -38,12 +37,12 @@ func NewConnection(user, password, host, dbname, port string) *sql.DB {
 
 func close(db *sql.DB) {
 	sigs := make(chan os.Signal, 1)
-
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
 	<-sigs
 
+	fmt.Println("Gracefully closing db connection")
 	if err := db.Close(); err != nil {
-		log.Printf("failed to properlt close database connection: %v", err)
+		log.Printf("Failed to properly close database connection: %v", err)
 	}
 }
