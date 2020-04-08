@@ -1,0 +1,58 @@
+version: '3.7'
+
+services:
+  sql-migration:
+    build:
+      context: .
+      dockerfile: .docker/go/dev/Dockerfile
+      args:
+        install_compile_deamon: "off"
+        install_goose: "on"
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    networks:
+      - buff
+
+  rest:
+    build:
+      context: .
+      dockerfile: .docker/go/dev/Dockerfile
+      args:
+        install_compile_deamon: "on"
+        install_goose: "off"
+    command: bash -c 'CompileDaemon -log-prefix=false -build="go build -race -o bin/rest ./cmd/rest" -command="./bin/rest -addr :8000" --graceful-kill=true -color=true'
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    expose:
+      - 8000
+    ports:
+      - ${LOCAL_REST_PORT}:8000
+    networks:
+      - buff
+
+  postgres:
+    image: postgres:11.6
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: gocargo
+    expose:
+      - 5432
+    ports:
+      - ${LOCAL_DB_PORT}:5432
+    volumes:
+      - pgdata11:/var/lib/postgresql/data
+    networks:
+      - buff
+
+volumes:
+  pgdata11:
+
+networks:
+  buff:
+    driver: bridge
+    name: "buff"

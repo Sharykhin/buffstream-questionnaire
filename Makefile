@@ -1,0 +1,37 @@
+.PHONY: up down migration migrate-up migrate-down migrate-status
+
+include .env
+export
+
+check-envs:
+ifndef LOCAL_DB_PORT
+	@echo Warning: LOCAL_DB_PORT isn\'t defined\; continue? [Y/n]
+	@read line; if [ $$line == "n" ]; then echo aborting; exit 1 ; fi
+endif
+ifndef LOCAL_REST_PORT
+	@echo Warning: LOCAL_REST_PORT isn\'t defined\; continue? [Y/n]
+	@read line; if [ $$line == "n" ]; then echo aborting; exit 1 ; fi
+endif
+
+
+up: check-envs
+	docker-compose up
+
+down:
+	docker-compose down
+
+migration:
+	# example: make migration name=crate_streams_table
+	docker-compose run sql-migration goose -dir infrastructure/database/migration create ${name} sql
+
+migrate-up:
+	# example: make migrate-up
+	docker-compose run sql-migration goose -dir infrastructure/database/migration postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" up
+
+migrate-down:
+	# example: make migrate-down
+	docker-compose run sql-migration goose -dir infrastructure/database/migration postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" down
+
+migrate-status:
+	# example: make migrate-status
+	docker-compose run sql-migration goose -dir infrastructure/database/migration postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" status
