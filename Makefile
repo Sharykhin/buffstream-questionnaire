@@ -28,14 +28,6 @@ down:
 stats:
 	docker stats $$(docker ps --filter network=go_payments --format="{{.Names}}")
 
-fixtures:
-	# example: make fixtures name=insert_streams_fixtures
-	docker-compose run sql-migration goose -dir ./database/fixtures create ${name} sql
-
-fixtures-up:
-	# example: make migrate-up
-	docker-compose run sql-migration goose -dir ./database/fixtures postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" up
-
 migration:
 	# example: make migration name=crate_streams_table
 	docker-compose run sql-migration goose -dir ./database/migrations create ${name} sql
@@ -51,3 +43,13 @@ migrate-down:
 migrate-status:
 	# example: make migrate-status
 	docker-compose run sql-migration goose -dir ./database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" status
+
+fixtures:
+	# example: make fixtures name=insert_streams_fixtures
+	docker-compose run sql-migration goose -dir ./database/fixtures create ${name} sql
+
+fixtures-up:
+	for file in `find ./database/fixtures | grep -i '.sql'`; do \
+		echo "importing fixture $$file"; \
+		docker exec -i buff_postgres psql -U ${DB_USER} ${DB_NAME} < "$$file"; \
+	done

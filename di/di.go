@@ -2,8 +2,10 @@ package di
 
 import (
 	"Sharykhin/buffstream-questionnaire/database/postgres"
-	"Sharykhin/buffstream-questionnaire/domains/stream/application/service"
-	"Sharykhin/buffstream-questionnaire/domains/stream/repository/sql"
+	questionSrv "Sharykhin/buffstream-questionnaire/domains/question/application/service"
+	questionSQL "Sharykhin/buffstream-questionnaire/domains/question/repository/sql"
+	streamSrv "Sharykhin/buffstream-questionnaire/domains/stream/application/service"
+	streamSQL "Sharykhin/buffstream-questionnaire/domains/stream/repository/sql"
 	"os"
 )
 
@@ -14,9 +16,10 @@ var (
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_NAME"),
 		os.Getenv("DB_PORT"),
-		)
-	streamRepo = sql.NewStreamRepository(db)
-
+	)
+	streamRepo   = streamSQL.NewStreamRepository(db)
+	questionRepo = questionSQL.NewQuestionRepository(db)
 	// StreamService is a implementation of stream service that domain provides
-	StreamService = service.NewStreamService(streamRepo)
+	StreamService   = streamSrv.NewStreamService(streamRepo)
+	QuestionService = questionSrv.NewQuestionService(questionRepo)
 )
