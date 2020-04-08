@@ -1,9 +1,10 @@
 package controller
 
 import (
+	"net/http"
+
 	"Sharykhin/buffstream-questionnaire/domains/stream/application/service"
 	"Sharykhin/buffstream-questionnaire/http/response"
-	"net/http"
 )
 
 // ListStreams returns list of streams with questions
@@ -20,9 +21,10 @@ func ListStreams(streamSrv service.StreamService, w http.ResponseWriter, r *http
 		return
 	}
 
-	response.OK(w, response.Data{"Streams": nil}, response.Meta{
+	l, t, _ := streamSrv.List(r.Context(), limit, offset)
+	response.OK(w, response.Data{"Streams": l}, response.Meta{
 		"Limit":  limit,
 		"Offset": offset,
-		"Total":  0,
+		"Total":  t,
 	})
 }

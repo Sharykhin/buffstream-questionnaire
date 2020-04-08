@@ -28,6 +28,14 @@ down:
 stats:
 	docker stats $$(docker ps --filter network=go_payments --format="{{.Names}}")
 
+fixtures:
+	# example: make fixtures name=insert_streams_fixtures
+	docker-compose run sql-migration goose -dir ./database/fixtures create ${name} sql
+
+fixtures-up:
+	# example: make migrate-up
+	docker-compose run sql-migration goose -dir ./database/fixtures postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" up
+
 migration:
 	# example: make migration name=crate_streams_table
 	docker-compose run sql-migration goose -dir ./database/migrations create ${name} sql
