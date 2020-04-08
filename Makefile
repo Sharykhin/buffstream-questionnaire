@@ -13,6 +13,8 @@ ifndef LOCAL_REST_PORT
 	@read line; if [ $$line == "n" ]; then echo aborting; exit 1 ; fi
 endif
 
+postgres:
+	docker-compose up postgres
 
 up: check-envs
 	docker-compose up
@@ -29,12 +31,12 @@ migration:
 
 migrate-up:
 	# example: make migrate-up
-	docker-compose run sql-migration goose -dir /database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" up
+	docker-compose run sql-migration goose -dir ./database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" up
 
 migrate-down:
 	# example: make migrate-down
-	docker-compose run sql-migration goose -dir /database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" down
+	docker-compose run sql-migration goose -dir ./database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" down
 
 migrate-status:
 	# example: make migrate-status
-	docker-compose run sql-migration goose -dir /database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" status
+	docker-compose run sql-migration goose -dir ./database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" status
