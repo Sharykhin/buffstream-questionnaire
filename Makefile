@@ -16,6 +16,9 @@ endif
 postgres:
 	docker-compose up postgres
 
+rest:
+	docker-compose up rest
+
 up: check-envs
 	docker-compose up
 
