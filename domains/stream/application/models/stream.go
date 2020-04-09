@@ -1,11 +1,13 @@
 package models
 
 import (
-	"Sharykhin/buffstream-questionnaire/domains/stream/repository/models"
 	"time"
+
+	"Sharykhin/buffstream-questionnaire/domains/stream/repository/models"
 )
 
 type (
+	// Stream represents steam model on application layer.
 	Stream struct {
 		UUID      string    `json:"UUID"`
 		Title     string    `json:"Title"`
@@ -14,6 +16,7 @@ type (
 	}
 )
 
+// NewStreamFromRepository creates a new stream model based on a model that repository returned.
 func NewStreamFromRepository(repoModel *models.Stream) *Stream {
 	stream := Stream{
 		UUID:      repoModel.UUID,

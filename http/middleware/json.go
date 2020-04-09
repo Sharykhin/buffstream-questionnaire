@@ -1,10 +1,11 @@
 package middleware
 
 import (
-	"Sharykhin/buffstream-questionnaire/http/response"
 	"errors"
 	"net/http"
 	"strings"
+
+	"Sharykhin/buffstream-questionnaire/http/response"
 )
 
 //JsonContentType validates that a correct header is represented in a request

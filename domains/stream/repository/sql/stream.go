@@ -1,22 +1,23 @@
 package sql
 
 import (
-	"Sharykhin/buffstream-questionnaire/domains/stream/repository/models"
 	"context"
 	"database/sql"
 	"fmt"
+
+	"Sharykhin/buffstream-questionnaire/domains/stream/repository/models"
 )
 
 type (
+	// StreamRepository is a sql implementation of stream repository interface
 	StreamRepository struct {
 		db *sql.DB
-
 	}
 )
 
-// List returns a limited number of rows
+// List returns a limited number of streams records. If there are no records empty slice will be returned, not nil.
 func (r *StreamRepository) List(ctx context.Context, limit, offset int64) ([]models.Stream, error) {
-	var streams []models.Stream
+	streams := make([]models.Stream, 0)
 	query := "SELECT * FROM streams ORDER BY created_at DESC OFFSET $1 LIMIT $2"
 
 	rows, err := r.db.QueryContext(ctx, query, offset, limit)

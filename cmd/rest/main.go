@@ -1,9 +1,10 @@
 package main
 
 import (
-	"Sharykhin/buffstream-questionnaire/http"
 	"flag"
 	"fmt"
+
+	"Sharykhin/buffstream-questionnaire/http"
 )
 
 var (

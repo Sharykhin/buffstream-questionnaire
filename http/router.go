@@ -1,12 +1,12 @@
 package http
 
 import (
-	"Sharykhin/buffstream-questionnaire/di"
-	"Sharykhin/buffstream-questionnaire/http/controller"
 	"net/http"
 
 	"github.com/gorilla/mux"
 
+	"Sharykhin/buffstream-questionnaire/di"
+	"Sharykhin/buffstream-questionnaire/http/controller"
 	"Sharykhin/buffstream-questionnaire/http/middleware"
 )
 

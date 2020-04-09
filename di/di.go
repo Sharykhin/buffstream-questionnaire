@@ -1,12 +1,13 @@
 package di
 
 import (
+	"os"
+
 	"Sharykhin/buffstream-questionnaire/database/postgres"
 	questionSrv "Sharykhin/buffstream-questionnaire/domains/question/application/service"
 	questionSQL "Sharykhin/buffstream-questionnaire/domains/question/repository/sql"
 	streamSrv "Sharykhin/buffstream-questionnaire/domains/stream/application/service"
 	streamSQL "Sharykhin/buffstream-questionnaire/domains/stream/repository/sql"
-	"os"
 )
 
 var (

@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"Sharykhin/buffstream-questionnaire/domains/stream/repository/models"
 	"context"
+
+	"Sharykhin/buffstream-questionnaire/domains/stream/repository/models"
 )
 
 type (
@@ -14,7 +15,7 @@ type (
 
 	// CreateStream represents income request to create a new stream in repository
 	CreateStream struct {
-		UUID    string
-		Title    string
+		UUID  string
+		Title string
 	}
 )
