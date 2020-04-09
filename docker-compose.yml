@@ -40,6 +40,21 @@ services:
     networks:
       - buff
 
+  test:
+    build:
+      context: .
+      dockerfile: .docker/go/dev/Dockerfile
+      args:
+        install_compile_deamon: "off"
+        install_goose: "off"
+    command: bash -c 'go test ./... --count=1 -v '
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    networks:
+      - buff
+
   postgres:
     image: postgres:11.6
     container_name: buff_postgres

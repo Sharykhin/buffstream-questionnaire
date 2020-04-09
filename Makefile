@@ -1,4 +1,4 @@
-.PHONY: up down stats migration migrate-up migrate-down migrate-status fixtures fixtures-run
+.PHONY: up down stats migration migrate-up migrate-down migrate-status fixtures fixtures-run test
 
 include .env
 export
@@ -47,3 +47,6 @@ fixtures-run:
 		echo "importing fixture $$file"; \
 		docker exec -i buff_postgres psql -U ${DB_USER} ${DB_NAME} < "$$file"; \
 	done
+
+test:
+	 docker-compose up test
