@@ -11,8 +11,8 @@ type (
 	Question struct {
 		UUID      string    `json:"UUID"`
 		Text      string    `json:"Text"`
-		CreatedAt time.Time `json:"CreatedAt"`
-		UpdatedAt time.Time `json:"UpdatedAt"`
+		CreatedAt time.Time `json:"-"`
+		UpdatedAt time.Time `json:"-"`
 		Answers   []Answer  `json:"Answers,omitempty"`
 	}
 )
