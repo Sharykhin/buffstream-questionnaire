@@ -1,4 +1,4 @@
-.PHONY: up down stats migration migrate-up migrate-down migrate-status
+.PHONY: up down stats migration migrate-up migrate-down migrate-status fixtures fixtures-run
 
 include .env
 export
@@ -12,12 +12,6 @@ ifndef LOCAL_REST_PORT
 	@echo Warning: LOCAL_REST_PORT isn\'t defined\; continue? [Y/n]
 	@read line; if [ $$line == "n" ]; then echo aborting; exit 1 ; fi
 endif
-
-postgres:
-	docker-compose up postgres
-
-rest:
-	docker-compose up rest
 
 up: check-envs
 	docker-compose up
@@ -48,7 +42,7 @@ fixtures:
 	# example: make fixtures name=insert_streams_fixtures
 	docker-compose run sql-migration goose -dir ./database/fixtures create ${name} sql
 
-fixtures-up:
+fixtures-run:
 	for file in `find ./database/fixtures | grep -i '.sql'`; do \
 		echo "importing fixture $$file"; \
 		docker exec -i buff_postgres psql -U ${DB_USER} ${DB_NAME} < "$$file"; \

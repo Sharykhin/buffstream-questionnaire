@@ -19,7 +19,7 @@ func GetByIdentifier(questionSrv service.QuestionService, w http.ResponseWriter,
 
 	err := validateID(ID)
 	if err != nil {
-		response.BadRequest(w, errors.New("provided ID is not valid"))
+		response.BadRequest(w, errors.New("provided id is not valid"))
 		return
 	}
 
