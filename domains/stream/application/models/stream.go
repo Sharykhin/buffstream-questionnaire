@@ -7,19 +7,19 @@ import (
 
 type (
 	Stream struct {
-		UUID string	`json:"UUID"`
-		Title string `json:"Title"`
+		UUID      string    `json:"UUID"`
+		Title     string    `json:"Title"`
 		CreatedAt time.Time `json:"CreatedAt"`
 		UpdatedAt time.Time `json:"UpdatedAt"`
 	}
 )
 
-func NewStreamFromRepository(repoStream models.Stream) *Stream {
+func NewStreamFromRepository(repoModel *models.Stream) *Stream {
 	stream := Stream{
-		UUID: repoStream.UUID,
-		Title: repoStream.Title,
-		CreatedAt: repoStream.CreatedAt,
-		UpdatedAt: repoStream.UpdatedAt,
+		UUID:      repoModel.UUID,
+		Title:     repoModel.Title,
+		CreatedAt: repoModel.CreatedAt,
+		UpdatedAt: repoModel.UpdatedAt,
 	}
 
 	return &stream

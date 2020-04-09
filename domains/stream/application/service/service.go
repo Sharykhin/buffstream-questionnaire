@@ -31,7 +31,7 @@ func (s *StreamHandler) List(ctx context.Context, limit, offset int64) ([]models
 		return nil, 0, fmt.Errorf("failed to get total number of streams from a repository: %v", err)
 	}
 	for _, repoStream := range repoStreams {
-		stream := models.NewStreamFromRepository(repoStream)
+		stream := models.NewStreamFromRepository(&repoStream)
 		streams = append(streams, *stream)
 	}
 

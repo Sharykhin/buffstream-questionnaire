@@ -46,6 +46,8 @@ func BadRequest(w http.ResponseWriter, err error) {
 
 // ServerError sends 500 response
 func ServerError(w http.ResponseWriter, err error) {
+	// TODO: log trace and return only 500 if there is a production environment
+
 	response := newResponse(http.StatusInternalServerError, nil, nil, err)
 	sendJSON(w, &response)
 }
