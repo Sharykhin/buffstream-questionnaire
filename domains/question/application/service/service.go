@@ -1,12 +1,13 @@
 package service
 
 import (
-	"Sharykhin/buffstream-questionnaire/domains/question/application/model"
-	"Sharykhin/buffstream-questionnaire/domains/question/repository"
-	appErrors "Sharykhin/buffstream-questionnaire/errors"
 	"context"
 	"errors"
 	"fmt"
+
+	"Sharykhin/buffstream-questionnaire/domains/question/application/model"
+	"Sharykhin/buffstream-questionnaire/domains/question/repository"
+	appErrors "Sharykhin/buffstream-questionnaire/errors"
 )
 
 type (
@@ -66,15 +67,12 @@ func (s *QuestionHandler) GetAllByStreamIDs(ctx context.Context, UUIDs []string)
 
 	streams := make(model.Streams, len(repoStreams))
 	for _, repoStream := range repoStreams {
-		stream := model.Stream{
-			UUID:      repoStream.UUID,
-			Questions: make([]model.Question, len(repoStream.Questions)),
-		}
+		streams[repoStream.UUID] = make([]model.Question, len(repoStream.Questions))
+
 		for j, repoQuestion := range repoStream.Questions {
 			question := model.NewQuestionFromRepository(&repoQuestion)
-			stream.Questions[j] = *question
+			streams[repoStream.UUID][j] = *question
 		}
-		streams[stream.UUID] = stream.Questions
 	}
 
 	return streams, nil

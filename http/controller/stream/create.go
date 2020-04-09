@@ -1,6 +1,7 @@
 package stream
 
 import (
+	"Sharykhin/buffstream-questionnaire/errors"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -27,7 +28,8 @@ func Create(
 		response.BadRequest(w, fmt.Errorf("request payload is invalid: %v", err))
 		return
 	}
-	defer r.Body.Close()
+
+	defer errors.CheckDefferError(r.Body.Close)
 
 	stream, err := streamSrv.Create(r.Context(), req.Title)
 	if err != nil {

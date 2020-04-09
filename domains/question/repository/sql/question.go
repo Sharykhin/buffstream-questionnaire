@@ -39,6 +39,7 @@ func (r *QuestionRepository) FindOneByIDWithAnswers(ctx context.Context, UUID st
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute query %v: %v", query, err)
 	}
+	defer errors.CheckDefferError(rows.Close)
 
 	var answers []model.Answer
 	var question *model.Question
@@ -93,7 +94,7 @@ func (r *QuestionRepository) FindOneByIDWithAnswers(ctx context.Context, UUID st
 
 	question.Answers = answers
 
-	return question, nil
+	return question, rows.Err()
 }
 
 // FindListByStreamID finds all questions associated with a specific stream
@@ -107,6 +108,7 @@ func (r *QuestionRepository) FindListByStreamID(ctx context.Context, UUID string
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute query %v: %v", query, err)
 	}
+	defer errors.CheckDefferError(rows.Close)
 
 	var questions []model.Question
 	for rows.Next() {
@@ -149,6 +151,7 @@ func (r *QuestionRepository) FindListByStreamIDs(ctx context.Context, UUIDs []st
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute query %v: %v", query, err)
 	}
+	defer errors.CheckDefferError(rows.Close)
 
 	aggregates := map[string][]model.Question{}
 	for rows.Next() {

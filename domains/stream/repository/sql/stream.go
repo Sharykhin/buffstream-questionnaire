@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"Sharykhin/buffstream-questionnaire/domains/stream/repository/models"
+	"Sharykhin/buffstream-questionnaire/errors"
 )
 
 type (
@@ -19,14 +20,14 @@ type (
 // List returns a limited number of streams records. If there are no records empty slice will be returned, not nil.
 func (r *StreamRepository) List(ctx context.Context, limit, offset int64) ([]models.Stream, error) {
 	streams := make([]models.Stream, 0)
-	query := "SELECT * FROM streams ORDER BY created_at DESC OFFSET $1 LIMIT $2"
+	query := "SELECT * FROM streams ORDER BY created_at ASC OFFSET $1 LIMIT $2"
 
 	rows, err := r.db.QueryContext(ctx, query, offset, limit)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute sql %s query: %v", query, err)
 	}
-	//TODO: check error
-	defer rows.Close()
+
+	defer errors.CheckDefferError(rows.Close)
 
 	for rows.Next() {
 		var stream models.Stream

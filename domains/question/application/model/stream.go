@@ -1,11 +1,6 @@
 package model
 
 type (
-	// Stream represents stream model in question domain
-	Stream struct {
-		UUID      string
-		Questions []Question
-	}
-
+	// Streams is association of questions for each stream
 	Streams map[string][]Question
 )
