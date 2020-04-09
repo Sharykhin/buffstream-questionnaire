@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 
 	"Sharykhin/buffstream-questionnaire/domains/question/repository/model"
 	"Sharykhin/buffstream-questionnaire/errors"
@@ -120,6 +121,79 @@ func (r *QuestionRepository) FindListByStreamID(ctx context.Context, UUID string
 
 	return questions, rows.Err()
 
+}
+
+// FindListByStreamIDs find all questions for a given stream ids list
+func (r *QuestionRepository) FindListByStreamIDs(ctx context.Context, UUIDs []string) ([]model.Stream, error) {
+	streams := make([]model.Stream, 0)
+	if len(UUIDs) == 0 {
+		return streams, nil
+	}
+
+	placeholder := ""
+	for i := range UUIDs {
+		placeholder = placeholder + fmt.Sprintf("$%d,", i+1)
+	}
+	placeholder = strings.TrimRight(placeholder, ",")
+	query := `
+	SELECT q.*, s.uuid as stream_uuid FROM questions AS q
+	INNER JOIN stream_questions AS sq ON  sq.question_id=q.id
+	INNER JOIN streams AS s on sq.stream_id=s.id
+	WHERE s.uuid IN (` + placeholder + `)
+	`
+	params := make([]interface{}, len(UUIDs))
+	for i, v := range UUIDs {
+		params[i] = v
+	}
+	rows, err := r.db.QueryContext(ctx, query, params...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute query %v: %v", query, err)
+	}
+
+	aggregates := map[string][]model.Question{}
+	for rows.Next() {
+		var aggregate struct {
+			model.Question
+			StreamUUID string
+		}
+
+		err := rows.Scan(
+			&aggregate.ID,
+			&aggregate.UUID,
+			&aggregate.Text,
+			&aggregate.CreatedAt,
+			&aggregate.UpdatedAt,
+			&aggregate.StreamUUID,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan into aggregate struct: %v", err)
+		}
+
+		if _, ok := aggregates[aggregate.StreamUUID]; !ok {
+			aggregates[aggregate.StreamUUID] = make([]model.Question, 0)
+		}
+
+		question := model.Question{
+			ID:        aggregate.ID,
+			UUID:      aggregate.UUID,
+			Text:      aggregate.Text,
+			CreatedAt: aggregate.CreatedAt,
+			UpdatedAt: aggregate.UpdatedAt,
+		}
+
+		aggregates[aggregate.StreamUUID] = append(aggregates[aggregate.StreamUUID], question)
+	}
+
+	for streamUUID, questions := range aggregates {
+		stream := model.Stream{
+			UUID:      streamUUID,
+			Questions: questions,
+		}
+
+		streams = append(streams, stream)
+	}
+
+	return streams, rows.Err()
 }
 
 // NewQuestionRepository returns a new instance of sql question repository

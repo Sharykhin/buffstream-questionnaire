@@ -6,11 +6,10 @@ import (
 )
 
 type (
+	// QuestionRepository describes API on the repository layer
 	QuestionRepository interface {
 		FindOneByIDWithAnswers(ctx context.Context, UUID string) (*model.Question, error)
 		FindListByStreamID(ctx context.Context, UUID string) ([]model.Question, error)
-	}
-
-	AnswerRepository interface {
+		FindListByStreamIDs(ctx context.Context, UUIDs []string) ([]model.Stream, error)
 	}
 )

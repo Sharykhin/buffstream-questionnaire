@@ -11,6 +11,7 @@ type (
 	StreamRepository interface {
 		List(ctx context.Context, limit, offset int64) ([]models.Stream, error)
 		Count(cxt context.Context) (int64, error)
+		Create(ctx context.Context, UUID, title string) (*models.Stream, error)
 	}
 
 	// CreateStream represents income request to create a new stream in repository

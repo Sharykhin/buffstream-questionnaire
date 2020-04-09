@@ -14,6 +14,7 @@ type (
 	QuestionService interface {
 		GetOneByID(ctx context.Context, UUID string) (*model.Question, error)
 		GetAllByStreamID(ctx context.Context, UUID string) ([]model.Question, error)
+		GetAllByStreamIDs(ctx context.Context, UUIDs []string) (model.Streams, error)
 	}
 
 	// QuestionHandler is a concrete implementation of StreamService interface
@@ -54,6 +55,29 @@ func (s *QuestionHandler) GetAllByStreamID(ctx context.Context, UUID string) ([]
 	}
 
 	return questions, nil
+}
+
+// GetAllByStreamIDs returns question list aggregated by stream identifiers
+func (s *QuestionHandler) GetAllByStreamIDs(ctx context.Context, UUIDs []string) (model.Streams, error) {
+	repoStreams, err := s.questionRepo.FindListByStreamIDs(ctx, UUIDs)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get list of questions by streams ids: %v", err)
+	}
+
+	streams := make(model.Streams, len(repoStreams))
+	for _, repoStream := range repoStreams {
+		stream := model.Stream{
+			UUID:      repoStream.UUID,
+			Questions: make([]model.Question, len(repoStream.Questions)),
+		}
+		for j, repoQuestion := range repoStream.Questions {
+			question := model.NewQuestionFromRepository(&repoQuestion)
+			stream.Questions[j] = *question
+		}
+		streams[stream.UUID] = stream.Questions
+	}
+
+	return streams, nil
 }
 
 // NewQuestionService create a new instance of question service

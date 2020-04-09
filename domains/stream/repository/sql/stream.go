@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"Sharykhin/buffstream-questionnaire/domains/stream/repository/models"
 )
@@ -51,6 +52,28 @@ func (r *StreamRepository) Count(ctx context.Context) (int64, error) {
 	}
 
 	return total, nil
+}
+
+// Create inserts a new stream records into the database
+func (r *StreamRepository) Create(ctx context.Context, UUID, title string) (*models.Stream, error) {
+	stream := models.Stream{
+		UUID:      UUID,
+		Title:     title,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	query := "INSERT INTO streams(uuid, title, created_at, updated_at) VALUES($1, $2, $3, $4) RETURNING id"
+
+	var id int64
+	err := r.db.QueryRowContext(ctx, query, UUID, title, time.Now(), time.Now()).Scan(&id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to insert a new stream record: %v", err)
+	}
+
+	stream.ID = id
+
+	return &stream, nil
 }
 
 // NewStreamRepository returns a new instance of sql stream repository
