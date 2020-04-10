@@ -16,7 +16,7 @@ type (
 	}
 )
 
-func NewAnswerFromRepository(repoModel model.Answer) *Answer {
+func NewAnswerFromRepository(repoModel *model.Answer) *Answer {
 	answer := Answer{
 		ID:        repoModel.ID,
 		Text:      repoModel.Text,

@@ -31,7 +31,7 @@ func (s *QuestionHandler) GetOneByID(ctx context.Context, UUID string) (*model.Q
 
 	if err != nil {
 		if errors.Is(err, appErrors.ResourceNotFound) {
-			return nil, fmt.Errorf("question was not found: %w", appErrors.ResourceNotFound)
+			return nil, err
 		}
 
 		return nil, fmt.Errorf("failed to get question by its uuid: %v", err)

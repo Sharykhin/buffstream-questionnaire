@@ -1,5 +1,7 @@
 package repository
 
+//go:generate mockery -name QuestionRepository
+
 import (
 	"Sharykhin/buffstream-questionnaire/domains/question/repository/model"
 	"context"

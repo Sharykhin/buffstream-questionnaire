@@ -1,5 +1,7 @@
 package repository
 
+//go:generate mockery -name StreamRepository
+
 import (
 	"context"
 

@@ -17,6 +17,7 @@ type (
 	}
 )
 
+// NewQuestionFromRepository creates question model on application layer based on what repository returned
 func NewQuestionFromRepository(repoModel *model.Question) *Question {
 	question := Question{
 		UUID:      repoModel.UUID,
@@ -27,7 +28,7 @@ func NewQuestionFromRepository(repoModel *model.Question) *Question {
 
 	var answers []Answer
 	for _, repoAnswer := range repoModel.Answers {
-		answer := NewAnswerFromRepository(repoAnswer)
+		answer := NewAnswerFromRepository(&repoAnswer)
 		answers = append(answers, *answer)
 	}
 
