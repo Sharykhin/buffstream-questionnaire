@@ -5,20 +5,14 @@ package repository
 import (
 	"context"
 
-	"Sharykhin/buffstream-questionnaire/domains/stream/repository/models"
+	"Sharykhin/buffstream-questionnaire/domains/stream/repository/model"
 )
 
 type (
 	// CompanyRepository describes storage interface
 	StreamRepository interface {
-		List(ctx context.Context, limit, offset int64) ([]models.Stream, error)
+		List(ctx context.Context, limit, offset int64) ([]model.Stream, error)
 		Count(cxt context.Context) (int64, error)
-		Create(ctx context.Context, UUID, title string) (*models.Stream, error)
-	}
-
-	// CreateStream represents income request to create a new stream in repository
-	CreateStream struct {
-		UUID  string
-		Title string
+		Create(ctx context.Context, UUID, title string) (*model.Stream, error)
 	}
 )

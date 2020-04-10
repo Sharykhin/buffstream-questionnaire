@@ -50,3 +50,6 @@ fixtures-run:
 
 test:
 	 docker-compose up test
+
+cover:
+	go test ./domains/question/application/service/... --count=1 -v -coverprofile=coverage.out && go tool cover -html=coverage.out

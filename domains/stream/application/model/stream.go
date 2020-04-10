@@ -17,7 +17,7 @@ type (
 )
 
 // NewStreamFromRepository creates a new stream model based on a model that repository returned.
-func NewStreamFromRepository(repoModel *models.Stream) *Stream {
+func NewStreamFromRepository(repoModel *model.Stream) *Stream {
 	stream := Stream{
 		UUID:      repoModel.UUID,
 		Title:     repoModel.Title,

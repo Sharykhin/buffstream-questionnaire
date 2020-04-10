@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	models "Sharykhin/buffstream-questionnaire/domains/stream/repository/models"
+	model "Sharykhin/buffstream-questionnaire/domains/stream/repository/model"
 	context "context"
 
 	mock "github.com/stretchr/testify/mock"
@@ -36,15 +36,15 @@ func (_m *StreamRepository) Count(cxt context.Context) (int64, error) {
 }
 
 // Create provides a mock function with given fields: ctx, UUID, title
-func (_m *StreamRepository) Create(ctx context.Context, UUID string, title string) (*models.Stream, error) {
+func (_m *StreamRepository) Create(ctx context.Context, UUID string, title string) (*model.Stream, error) {
 	ret := _m.Called(ctx, UUID, title)
 
-	var r0 *models.Stream
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) *models.Stream); ok {
+	var r0 *model.Stream
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *model.Stream); ok {
 		r0 = rf(ctx, UUID, title)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.Stream)
+			r0 = ret.Get(0).(*model.Stream)
 		}
 	}
 
@@ -59,15 +59,15 @@ func (_m *StreamRepository) Create(ctx context.Context, UUID string, title strin
 }
 
 // List provides a mock function with given fields: ctx, limit, offset
-func (_m *StreamRepository) List(ctx context.Context, limit int64, offset int64) ([]models.Stream, error) {
+func (_m *StreamRepository) List(ctx context.Context, limit int64, offset int64) ([]model.Stream, error) {
 	ret := _m.Called(ctx, limit, offset)
 
-	var r0 []models.Stream
-	if rf, ok := ret.Get(0).(func(context.Context, int64, int64) []models.Stream); ok {
+	var r0 []model.Stream
+	if rf, ok := ret.Get(0).(func(context.Context, int64, int64) []model.Stream); ok {
 		r0 = rf(ctx, limit, offset)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]models.Stream)
+			r0 = ret.Get(0).([]model.Stream)
 		}
 	}
 

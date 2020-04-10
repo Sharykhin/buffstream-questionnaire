@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"Sharykhin/buffstream-questionnaire/domains/stream/repository/models"
+	"Sharykhin/buffstream-questionnaire/domains/stream/repository/model"
 	"Sharykhin/buffstream-questionnaire/errors"
 )
 
@@ -18,8 +18,8 @@ type (
 )
 
 // List returns a limited number of streams records. If there are no records empty slice will be returned, not nil.
-func (r *StreamRepository) List(ctx context.Context, limit, offset int64) ([]models.Stream, error) {
-	streams := make([]models.Stream, 0)
+func (r *StreamRepository) List(ctx context.Context, limit, offset int64) ([]model.Stream, error) {
+	streams := make([]model.Stream, 0)
 	query := "SELECT * FROM streams ORDER BY created_at ASC OFFSET $1 LIMIT $2"
 
 	rows, err := r.db.QueryContext(ctx, query, offset, limit)
@@ -30,7 +30,7 @@ func (r *StreamRepository) List(ctx context.Context, limit, offset int64) ([]mod
 	defer errors.CheckDefferError(rows.Close)
 
 	for rows.Next() {
-		var stream models.Stream
+		var stream model.Stream
 		err := rows.Scan(&stream.ID, &stream.UUID, &stream.Title, &stream.CreatedAt, &stream.UpdatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan stream record: %v", err)
@@ -56,8 +56,8 @@ func (r *StreamRepository) Count(ctx context.Context) (int64, error) {
 }
 
 // Create inserts a new stream records into the database
-func (r *StreamRepository) Create(ctx context.Context, UUID, title string) (*models.Stream, error) {
-	stream := models.Stream{
+func (r *StreamRepository) Create(ctx context.Context, UUID, title string) (*model.Stream, error) {
+	stream := model.Stream{
 		UUID:      UUID,
 		Title:     title,
 		CreatedAt: time.Now(),
