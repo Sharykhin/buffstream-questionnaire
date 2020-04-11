@@ -10,20 +10,22 @@ import (
 )
 
 func TestNewAnswerFromRepository(t *testing.T) {
-	createdAt, updatedAt := time.Now(), time.Now()
+	assert := assert.New(t)
 
 	repoAnswer := model.Answer{
 		ID:        10,
 		Text:      "test answer",
 		IsCorrect: true,
-		CreatedAt: createdAt,
-		UpdatedAt: updatedAt,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
 	actual := NewAnswerFromRepository(&repoAnswer)
-	assert.Equal(t, repoAnswer.ID, actual.ID)
-	assert.Equal(t, repoAnswer.Text, actual.Text)
-	assert.Equal(t, repoAnswer.IsCorrect, actual.IsCorrect)
-	assert.Equal(t, repoAnswer.CreatedAt, actual.CreatedAt)
-	assert.Equal(t, repoAnswer.UpdatedAt, actual.UpdatedAt)
+
+	assert.NotNil(actual)
+	assert.Equal(repoAnswer.ID, actual.ID)
+	assert.Equal(repoAnswer.Text, actual.Text)
+	assert.Equal(repoAnswer.IsCorrect, actual.IsCorrect)
+	assert.Equal(repoAnswer.CreatedAt, actual.CreatedAt)
+	assert.Equal(repoAnswer.UpdatedAt, actual.UpdatedAt)
 }

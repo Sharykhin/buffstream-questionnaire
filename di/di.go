@@ -8,6 +8,7 @@ import (
 	questionSQL "Sharykhin/buffstream-questionnaire/domains/question/repository/sql"
 	streamSrv "Sharykhin/buffstream-questionnaire/domains/stream/application/service"
 	streamSQL "Sharykhin/buffstream-questionnaire/domains/stream/repository/sql"
+	"Sharykhin/buffstream-questionnaire/uuid"
 )
 
 var (
@@ -18,9 +19,10 @@ var (
 		os.Getenv("DB_NAME"),
 		os.Getenv("DB_PORT"),
 	)
-	streamRepo   = streamSQL.NewStreamRepository(db)
-	questionRepo = questionSQL.NewQuestionRepository(db)
+	streamRepo    = streamSQL.NewStreamRepository(db)
+	questionRepo  = questionSQL.NewQuestionRepository(db)
+	uuidGenerator = uuid.NewGoouidAdapter()
 	// StreamService is a implementation of stream service that domain provides
-	StreamService   = streamSrv.NewStreamService(streamRepo)
+	StreamService   = streamSrv.NewStreamService(uuidGenerator, streamRepo)
 	QuestionService = questionSrv.NewQuestionService(questionRepo)
 )

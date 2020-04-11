@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"Sharykhin/buffstream-questionnaire/domains/stream/repository/models"
+	"Sharykhin/buffstream-questionnaire/domains/stream/repository/model"
 )
 
 type (

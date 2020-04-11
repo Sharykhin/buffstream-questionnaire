@@ -4,34 +4,30 @@ import (
 	"testing"
 	"time"
 
-	uuid "github.com/nu7hatch/gouuid"
 	"github.com/stretchr/testify/assert"
 
 	"Sharykhin/buffstream-questionnaire/domains/question/repository/model"
 )
 
 func TestNewQuestionFromRepository(t *testing.T) {
-	ID, err := uuid.NewV4()
-	if err != nil {
-		panic(err)
-	}
-
-	createdAt, updatedAt := time.Now(), time.Now()
+	assert := assert.New(t)
 
 	repoQuestion := model.Question{
 		ID:        10,
-		UUID:      ID.String(),
+		UUID:      "UUID",
 		Text:      "test question",
-		CreatedAt: createdAt,
-		UpdatedAt: updatedAt,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
-	question := NewQuestionFromRepository(&repoQuestion)
-	assert.Equal(t, repoQuestion.UUID, question.UUID)
-	assert.Equal(t, repoQuestion.Text, question.Text)
-	assert.Equal(t, repoQuestion.CreatedAt, question.CreatedAt)
-	assert.Equal(t, repoQuestion.UpdatedAt, question.UpdatedAt)
-	assert.Equal(t, 0, len(question.Answers))
+	actual := NewQuestionFromRepository(&repoQuestion)
+
+	assert.NotNil(actual)
+	assert.Equal(repoQuestion.UUID, actual.UUID)
+	assert.Equal(repoQuestion.Text, actual.Text)
+	assert.Equal(repoQuestion.CreatedAt, actual.CreatedAt)
+	assert.Equal(repoQuestion.UpdatedAt, actual.UpdatedAt)
+	assert.Equal(0, len(actual.Answers))
 
 	repoQuestion.Answers = []model.Answer{
 		{
@@ -39,16 +35,16 @@ func TestNewQuestionFromRepository(t *testing.T) {
 			QuestionID: repoQuestion.ID,
 			Text:       "test answer",
 			IsCorrect:  true,
-			CreatedAt:  createdAt,
-			UpdatedAt:  updatedAt,
+			CreatedAt:  time.Now(),
+			UpdatedAt:  time.Now(),
 		},
 	}
 
-	question = NewQuestionFromRepository(&repoQuestion)
-	assert.Equal(t, 1, len(question.Answers))
-	assert.Equal(t, repoQuestion.Answers[0].ID, question.Answers[0].ID)
-	assert.Equal(t, repoQuestion.Answers[0].Text, question.Answers[0].Text)
-	assert.Equal(t, repoQuestion.Answers[0].IsCorrect, question.Answers[0].IsCorrect)
-	assert.Equal(t, repoQuestion.Answers[0].CreatedAt, question.Answers[0].CreatedAt)
-	assert.Equal(t, repoQuestion.Answers[0].UpdatedAt, question.Answers[0].UpdatedAt)
+	actual = NewQuestionFromRepository(&repoQuestion)
+	assert.Equal(1, len(actual.Answers))
+	assert.Equal(repoQuestion.Answers[0].ID, actual.Answers[0].ID)
+	assert.Equal(repoQuestion.Answers[0].Text, actual.Answers[0].Text)
+	assert.Equal(repoQuestion.Answers[0].IsCorrect, actual.Answers[0].IsCorrect)
+	assert.Equal(repoQuestion.Answers[0].CreatedAt, actual.Answers[0].CreatedAt)
+	assert.Equal(repoQuestion.Answers[0].UpdatedAt, actual.Answers[0].UpdatedAt)
 }

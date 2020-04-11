@@ -1,14 +1,11 @@
 package service
 
 import (
-	"context"
-	"fmt"
-	"log"
-
-	uuid "github.com/nu7hatch/gouuid"
-
 	"Sharykhin/buffstream-questionnaire/domains/stream/application/model"
 	"Sharykhin/buffstream-questionnaire/domains/stream/repository"
+	"Sharykhin/buffstream-questionnaire/uuid"
+	"context"
+	"fmt"
 )
 
 type (
@@ -20,7 +17,8 @@ type (
 
 	// StreamHandler is a concrete implementation of StreamService interface
 	StreamHandler struct {
-		streamRepo repository.StreamRepository
+		uuidGenerator uuid.Generator
+		streamRepo    repository.StreamRepository
 	}
 )
 
@@ -45,12 +43,9 @@ func (s *StreamHandler) List(ctx context.Context, limit, offset int64) ([]model.
 
 // Create creates a new stream
 func (s *StreamHandler) Create(ctx context.Context, title string) (*model.Stream, error) {
-	u, err := uuid.NewV4()
-	if err != nil {
-		log.Panicf("failed to generate uuid v4: %v", err)
-	}
+	u := s.uuidGenerator.NewV4()
 
-	repoStream, err := s.streamRepo.Create(ctx, u.String(), title)
+	repoStream, err := s.streamRepo.Create(ctx, u, title)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a new stream: %v", err)
 	}
@@ -61,9 +56,10 @@ func (s *StreamHandler) Create(ctx context.Context, title string) (*model.Stream
 }
 
 // NewStreamService create a new instance of stream service
-func NewStreamService(streamRepo repository.StreamRepository) *StreamHandler {
+func NewStreamService(uuidGenerator uuid.Generator, streamRepo repository.StreamRepository) *StreamHandler {
 	srv := StreamHandler{
-		streamRepo: streamRepo,
+		uuidGenerator: uuidGenerator,
+		streamRepo:    streamRepo,
 	}
 
 	return &srv

@@ -47,7 +47,7 @@ services:
       args:
         install_compile_deamon: "off"
         install_goose: "off"
-    command: bash -c 'go test ./... --count=1 -v '
+    command: bash -c 'go test $$(go list ./domains/... | grep -v "mock" | grep -v "repository") -v --count=1 -coverprofile=coverage.out fmt'
     volumes:
       - type: bind
         source: .
