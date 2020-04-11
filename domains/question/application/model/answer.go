@@ -10,7 +10,7 @@ type (
 	Answer struct {
 		ID        int64     `json:"ID"`
 		Text      string    `json:"Text"`
-		IsCorrect bool      `json:"-"` // not to show correct answer in APi. Can be adjusted according to permissions
+		IsCorrect bool      `json:"IsCorrect"`
 		CreatedAt time.Time `json:"-"`
 		UpdatedAt time.Time `json:"-"`
 	}

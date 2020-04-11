@@ -14,7 +14,7 @@
 
 2. Build docker images:
 ```bash
-docker-compose build --abort-on-container-exit
+docker-compose -f docker-compose.dev.yml build
 ```
 
 3. Run the containers:
