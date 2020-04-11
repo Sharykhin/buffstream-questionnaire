@@ -14,33 +14,33 @@ ifndef LOCAL_REST_PORT
 endif
 
 up: check-envs
-	docker-compose up
+	docker-compose -f docker-compose.dev.yml up postgres rest
 
 down:
-	docker-compose down
+	docker-compose -f docker-compose.dev.yml down
 
 stats:
 	docker stats $$(docker ps --filter network=go_payments --format="{{.Names}}")
 
 migration:
 	# example: make migration name=crate_streams_table
-	docker-compose run sql-migration goose -dir ./database/migrations create ${name} sql
+	docker-compose -f docker-compose.dev.yml run sql-migration goose -dir ./database/migrations create ${name} sql
 
 migrate-up:
 	# example: make migrate-up
-	docker-compose run sql-migration goose -dir ./database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" up
+	docker-compose -f docker-compose.dev.yml run sql-migration goose -dir ./database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" up
 
 migrate-down:
 	# example: make migrate-down
-	docker-compose run sql-migration goose -dir ./database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" down
+	docker-compose -f docker-compose.dev.yml run sql-migration goose -dir ./database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" down
 
 migrate-status:
 	# example: make migrate-status
-	docker-compose run sql-migration goose -dir ./database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" status
+	docker-compose -f docker-compose.dev.yml run sql-migration goose -dir ./database/migrations postgres "host=${DB_HOST} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable port=${DB_PORT}" status
 
 fixtures:
 	# example: make fixtures name=insert_streams_fixtures
-	docker-compose run sql-migration goose -dir ./database/fixtures create ${name} sql
+	docker-compose -f docker-compose.dev.yml run sql-migration goose -dir ./database/fixtures create ${name} sql
 
 fixtures-run:
 	for file in `find ./database/fixtures | grep -i '.sql'`; do \
@@ -49,4 +49,4 @@ fixtures-run:
 	done
 
 test:
-	 docker-compose up test
+	 docker-compose -f docker-compose.dev.yml up test

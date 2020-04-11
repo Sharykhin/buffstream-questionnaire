@@ -1,0 +1,60 @@
+version: '3.7'
+
+services:
+  sql-migration:
+    build:
+      context: .
+      dockerfile: .docker/go/dev/Dockerfile
+      args:
+        install_compile_deamon: "off"
+        install_goose: "on"
+    command: bash -c 'goose -dir ./database/migrations postgres "host=postgres user=postgres password=root dbname=buff sslmode=disable port=5432" up'
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    networks:
+      - buff_integration
+
+  test:
+    build:
+      context: .
+      dockerfile: .docker/go/dev/Dockerfile
+      args:
+        install_compile_deamon: "off"
+        install_goose: "off"
+    command: bash -c 'go test ./http/... -v --tags=integration'
+    environment:
+      DB_USER: postgres
+      DB_PASS: root
+      DB_HOST: postgres
+      DB_NAME: buff
+      DB_PORT: 5432
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    networks:
+      - buff_integration
+
+  postgres:
+    image: postgres:11.6
+    container_name: buff_postgres_test
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: buff
+    expose:
+      - 5432
+    volumes:
+      - testdata:/var/lib/postgresql/data
+    networks:
+      - buff_integration
+
+volumes:
+  testdata:
+
+networks:
+  buff_integration:
+    driver: bridge
+    name: "buff_integration"

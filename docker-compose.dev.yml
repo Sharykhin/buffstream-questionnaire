@@ -22,7 +22,9 @@ services:
       args:
         install_compile_deamon: "on"
         install_goose: "off"
-    command: bash -c 'CompileDaemon -log-prefix=false -build="go build -race -o bin/rest ./cmd/rest" -command="./bin/rest -addr :8000" --graceful-kill=true -color=true'
+    command: bash -c '
+        while !</dev/tcp/postgres/5432; do sleep 1; done;
+        CompileDaemon -log-prefix=false -build="go build -race -o bin/rest ./cmd/rest" -command="./bin/rest -addr :8000" --graceful-kill=true -color=true'
     environment:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
@@ -37,6 +39,8 @@ services:
       - 8000
     ports:
       - ${LOCAL_REST_PORT}:8000
+    depends_on:
+      - postgres
     networks:
       - buff
 
@@ -47,7 +51,7 @@ services:
       args:
         install_compile_deamon: "off"
         install_goose: "off"
-    command: bash -c 'go test $$(go list ./domains/... | grep -v "mock" | grep -v "repository") -v --count=1 -coverprofile=coverage.out fmt'
+    command: bash -c 'go test $$(go list ./domains/... | grep -v "mock" | grep -v "repository") -v --count=1 --tags=unit -coverprofile=coverage.out fmt'
     volumes:
       - type: bind
         source: .
