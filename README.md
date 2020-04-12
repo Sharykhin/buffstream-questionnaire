@@ -9,7 +9,7 @@
 
 1. Make copy of env.example
  ```bash
- cp env.example .env
+ cp .env.example .env
  ```
 
 2. Build docker images:
