@@ -7,7 +7,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nu7hatch/gouuid"
 	"github.com/stretchr/testify/assert"
 
 	applicationModel "Sharykhin/buffstream-questionnaire/domains/question/application/model"
@@ -19,22 +18,19 @@ import (
 func TestQuestionHandler_GetOneByID(t *testing.T) {
 	assert := assert.New(t)
 
-	UUID, err := uuid.NewV4()
-	if err != nil {
-		panic(err)
-	}
-
 	tt := []struct {
 		name          string
+		inUUID        string
 		expectedModel *repositoryModel.Question
 		expectedErr   error
 		assertFn      func(actual *applicationModel.Question, err error)
 	}{
 		{
-			name: "Success",
+			name:   "Success",
+			inUUID: "UUID",
 			expectedModel: &repositoryModel.Question{
 				ID:        10,
-				UUID:      UUID.String(),
+				UUID:      "UUID",
 				Text:      "test question",
 				CreatedAt: time.Now(),
 				UpdatedAt: time.Now(),
@@ -42,11 +38,12 @@ func TestQuestionHandler_GetOneByID(t *testing.T) {
 			expectedErr: nil,
 			assertFn: func(actual *applicationModel.Question, err error) {
 				assert.Nil(err)
-				assert.Equal(UUID.String(), actual.UUID)
+				assert.Equal("UUID", actual.UUID)
 			},
 		},
 		{
 			name:          "Error Not Found",
+			inUUID:        "UUID",
 			expectedModel: nil,
 			expectedErr:   fmt.Errorf("no records was found: %w", appErrors.ResourceNotFound),
 			assertFn: func(actual *applicationModel.Question, err error) {
@@ -71,12 +68,12 @@ func TestQuestionHandler_GetOneByID(t *testing.T) {
 			repoMock := &mocks.QuestionRepository{}
 			ctx := context.Background()
 			repoMock.
-				On("FindOneByIDWithAnswers", ctx, UUID.String()).
+				On("FindOneByIDWithAnswers", ctx, tc.inUUID).
 				Once().
 				Return(tc.expectedModel, tc.expectedErr)
 
 			srv := NewQuestionService(repoMock)
-			actual, err := srv.GetOneByID(ctx, UUID.String())
+			actual, err := srv.GetOneByID(ctx, tc.inUUID)
 			repoMock.AssertExpectations(t)
 			tc.assertFn(actual, err)
 		})
@@ -86,22 +83,19 @@ func TestQuestionHandler_GetOneByID(t *testing.T) {
 func TestQuestionHandler_GetAllByStreamID(t *testing.T) {
 	assert := assert.New(t)
 
-	UUID, err := uuid.NewV4()
-	if err != nil {
-		panic(err)
-	}
-
 	tt := []struct {
 		name           string
+		inUUID         string
 		expectedModels []repositoryModel.Question
 		expectedErr    error
 		assertFn       func(actual []applicationModel.Question, err error)
 	}{
 		{
-			name: "Success",
+			name:   "Success",
+			inUUID: "UUID",
 			expectedModels: []repositoryModel.Question{{
 				ID:        10,
-				UUID:      UUID.String(),
+				UUID:      "UUID",
 				Text:      "test question",
 				CreatedAt: time.Now(),
 				UpdatedAt: time.Now(),
@@ -110,11 +104,12 @@ func TestQuestionHandler_GetAllByStreamID(t *testing.T) {
 			assertFn: func(actual []applicationModel.Question, err error) {
 				assert.Nil(err)
 				assert.Equal(1, len(actual))
-				assert.Equal(UUID.String(), actual[0].UUID)
+				assert.Equal("UUID", actual[0].UUID)
 			},
 		},
 		{
 			name:           "Error Something went wrong",
+			inUUID:         "UUID",
 			expectedModels: nil,
 			expectedErr:    errors.New("server error"),
 			assertFn: func(actual []applicationModel.Question, err error) {
@@ -129,12 +124,12 @@ func TestQuestionHandler_GetAllByStreamID(t *testing.T) {
 			repoMock := &mocks.QuestionRepository{}
 			ctx := context.Background()
 			repoMock.
-				On("FindListByStreamID", ctx, UUID.String()).
+				On("FindListByStreamID", ctx, tc.inUUID).
 				Once().
 				Return(tc.expectedModels, tc.expectedErr)
 
 			srv := NewQuestionService(repoMock)
-			actual, err := srv.GetAllByStreamID(ctx, UUID.String())
+			actual, err := srv.GetAllByStreamID(ctx, tc.inUUID)
 			repoMock.AssertExpectations(t)
 			tc.assertFn(actual, err)
 		})
@@ -143,16 +138,6 @@ func TestQuestionHandler_GetAllByStreamID(t *testing.T) {
 
 func TestQuestionHandler_GetAllByStreamIDs(t *testing.T) {
 	assert := assert.New(t)
-
-	UUID, err := uuid.NewV4()
-	if err != nil {
-		panic(err)
-	}
-
-	repoUUID, err := uuid.NewV4()
-	if err != nil {
-		panic(err)
-	}
 
 	tt := []struct {
 		name           string
@@ -163,11 +148,11 @@ func TestQuestionHandler_GetAllByStreamIDs(t *testing.T) {
 		{
 			name: "Success",
 			expectedModels: []repositoryModel.Stream{{
-				UUID: UUID.String(),
+				UUID: "UUID",
 				Questions: []repositoryModel.Question{
 					{
 						ID:        10,
-						UUID:      repoUUID.String(),
+						UUID:      "UUID2",
 						Text:      "test question",
 						CreatedAt: time.Now(),
 						UpdatedAt: time.Now(),
@@ -176,7 +161,7 @@ func TestQuestionHandler_GetAllByStreamIDs(t *testing.T) {
 			}},
 			expectedErr: nil,
 			assertFn: func(actual applicationModel.Streams, err error) {
-				questions, ok := actual[UUID.String()]
+				questions, ok := actual["UUID"]
 				assert.True(ok)
 				assert.Nil(err)
 				assert.Equal(1, len(questions))
@@ -198,12 +183,12 @@ func TestQuestionHandler_GetAllByStreamIDs(t *testing.T) {
 			repoMock := &mocks.QuestionRepository{}
 			ctx := context.Background()
 			repoMock.
-				On("FindListByStreamIDs", ctx, []string{UUID.String()}).
+				On("FindListByStreamIDs", ctx, []string{"UUID"}).
 				Once().
 				Return(tc.expectedModels, tc.expectedErr)
 
 			srv := NewQuestionService(repoMock)
-			actual, err := srv.GetAllByStreamIDs(ctx, []string{UUID.String()})
+			actual, err := srv.GetAllByStreamIDs(ctx, []string{"UUID"})
 			repoMock.AssertExpectations(t)
 			tc.assertFn(actual, err)
 		})
