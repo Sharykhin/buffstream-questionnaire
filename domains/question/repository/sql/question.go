@@ -81,6 +81,7 @@ func (r *QuestionRepository) FindOneByIDWithAnswers(ctx context.Context, UUID st
 			ID:         aggregate.Answer.ID,
 			QuestionID: aggregate.Question.ID,
 			Text:       aggregate.Answer.Text,
+			IsCorrect:  aggregate.Answer.IsCorrect,
 			CreatedAt:  aggregate.Answer.CreatedAt,
 			UpdatedAt:  aggregate.Answer.UpdatedAt,
 		}

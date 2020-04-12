@@ -112,15 +112,18 @@ JSON-response:
             "Answers": [
                 {
                     "ID": 1,
-                    "Text": "In 2012"
+                    "Text": "In 2012",
+                    "IsCorrect": false
                 },
                 {
                     "ID": 2,
-                    "Text": "In 2013"
+                    "Text": "In 2013",
+                    "IsCorrect": false
                 },
                 {
                     "ID": 3,
-                    "Text": "In 2014"
+                    "Text": "In 2014",
+                    "IsCorrect": true
                 }
             ]
         }
