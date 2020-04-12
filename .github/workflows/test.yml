@@ -15,4 +15,4 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Test
-        run: go test ./... --tags=unit
+        run: go test $(go list ./domains/... | grep -v "mock" | grep -v "repository") -v --tags=unit
